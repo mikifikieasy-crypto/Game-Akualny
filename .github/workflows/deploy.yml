@@ -21,7 +21,7 @@ jobs:
       name: github-pages
     steps:
       - name: Pobierz pliki
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Rozpakuj GameStats
         run: |

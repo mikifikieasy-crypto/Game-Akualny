@@ -1,8 +1,12 @@
-name: Publikuj GameStats
+name: Auto Zip - GameStats
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+    paths:
+      - 'GameStats-GitHub-Paczka.zip'
+      - '.github/workflows/wdróż.yml'
   workflow_dispatch:
 
 permissions:
@@ -17,18 +21,20 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
 
     steps:
-      - name: Pobierz pliki
+      - name: Pobierz repozytorium
         uses: actions/checkout@v4
 
       - name: Sprawdź ZIP
         run: |
           test -f GameStats-GitHub-Paczka.zip
+          unzip -t GameStats-GitHub-Paczka.zip
 
-      - name: Rozpakuj GameStats
+      - name: Automatycznie wypakuj ZIP
         run: |
           mkdir -p _site
           unzip -o GameStats-GitHub-Paczka.zip -d _site
@@ -37,7 +43,7 @@ jobs:
       - name: Przygotuj GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Wyślij stronę
+      - name: Prześlij stronę
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site

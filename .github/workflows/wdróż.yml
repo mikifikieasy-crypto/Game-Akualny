@@ -1,0 +1,46 @@
+name: Publikuj GameStats
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: gamestats-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+
+    steps:
+      - name: Pobierz pliki
+        uses: actions/checkout@v4
+
+      - name: Sprawdź ZIP
+        run: |
+          test -f GameStats-GitHub-Paczka.zip
+
+      - name: Rozpakuj GameStats
+        run: |
+          mkdir -p _site
+          unzip -o GameStats-GitHub-Paczka.zip -d _site
+          test -f _site/index.html
+
+      - name: Przygotuj GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Wyślij stronę
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Opublikuj GameStats
+        uses: actions/deploy-pages@v4
